@@ -17,15 +17,17 @@ class DashboardController extends Controller
 
         $todaySales = (int) Transaction::query()
             ->where('purchased_at', '>=', $today)
+            ->where('payment_status', Transaction::PAYMENT_PAID)
             ->sum('total');
 
         $todayTransactions = (int) Transaction::query()
             ->where('purchased_at', '>=', $today)
+            ->where('payment_status', Transaction::PAYMENT_PAID)
             ->count();
 
         $bestSeller = TransactionItem::query()
             ->select('menu_name_snapshot', DB::raw('SUM(quantity) as qty'))
-            ->whereHas('transaction', fn ($q) => $q->where('purchased_at', '>=', $today))
+            ->whereHas('transaction', fn ($q) => $q->where('purchased_at', '>=', $today)->where('payment_status', Transaction::PAYMENT_PAID))
             ->groupBy('menu_name_snapshot')
             ->orderByDesc('qty')
             ->first();
@@ -46,4 +48,3 @@ class DashboardController extends Controller
         ]);
     }
 }
-

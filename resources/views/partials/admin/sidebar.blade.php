@@ -10,20 +10,18 @@
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/95 text-brand-700 shadow-sm ring-1 ring-white/30">W</span>
             <span>Admin</span>
         </a>
-        <a href="{{ route('home') }}" class="rounded-xl bg-white/15 px-3 py-2 text-sm font-extrabold text-white hover:bg-white/20 md:hidden">Situs</a>
     </div>
 
     <nav class="px-2 pb-4 text-sm">
         <a class="{{ $itemClass(request()->routeIs('admin.dashboard')) }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+        <a class="{{ $itemClass(request()->routeIs('admin.orders.*') || request()->routeIs('admin.pos') || request()->routeIs('admin.sales.*')) }}" href="{{ route('admin.orders.index') }}">Penjualan</a>
         <a class="{{ $itemClass(request()->routeIs('admin.menu.*')) }}" href="{{ route('admin.menu.index') }}">Menu</a>
         <a class="{{ $itemClass(request()->routeIs('admin.stocks.*')) }}" href="{{ route('admin.stocks.index') }}">Stok</a>
-        <a class="{{ $itemClass(request()->routeIs('admin.sales.*')) }}" href="{{ route('admin.sales.index') }}">Penjualan</a>
         <a class="{{ $itemClass(request()->routeIs('admin.promos.*')) }}" href="{{ route('admin.promos.index') }}">Promo</a>
         <a class="{{ $itemClass(request()->routeIs('admin.members.*')) }}" href="{{ route('admin.members.index') }}">Member</a>
         <a class="{{ $itemClass(request()->routeIs('admin.loyalty.*')) }}" href="{{ route('admin.loyalty.edit') }}">Loyalty</a>
 
         <div class="mt-2 border-t border-white/20 pt-2">
-            <a class="{{ $itemClass(false) }}" href="{{ route('home') }}">Kembali ke situs</a>
             <form method="POST" action="{{ route('admin.logout') }}" class="mt-2">
                 @csrf
                 <button class="w-full rounded-xl bg-white/95 px-3 py-2 text-left font-extrabold text-brand-700 shadow-sm hover:bg-white">Logout</button>

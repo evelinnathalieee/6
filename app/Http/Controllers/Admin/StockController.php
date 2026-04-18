@@ -18,8 +18,23 @@ class StockController extends Controller
             ->orderBy('name')
             ->get();
 
+        $recentMovements = StockMovement::query()
+            ->with('ingredient')
+            ->orderByDesc('moved_at')
+            ->limit(6)
+            ->get();
+
+        $summary = [
+            'total_items' => $ingredients->count(),
+            'safe_items' => $ingredients->filter(fn (Ingredient $ingredient) => $ingredient->stockStatus() === 'aman')->count(),
+            'low_items' => $ingredients->filter(fn (Ingredient $ingredient) => $ingredient->stockStatus() === 'menipis')->count(),
+            'empty_items' => $ingredients->filter(fn (Ingredient $ingredient) => $ingredient->stockStatus() === 'habis')->count(),
+        ];
+
         return view('admin.stocks.index', [
             'ingredients' => $ingredients,
+            'recentMovements' => $recentMovements,
+            'summary' => $summary,
         ]);
     }
 

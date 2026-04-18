@@ -56,9 +56,9 @@
         <div class="rounded-3xl border border-brand-200 bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
             <div class="text-lg font-semibold">Akses cepat</div>
             <div class="mt-4 grid gap-3 md:grid-cols-2">
-                <a href="{{ route('admin.sales.index') }}" class="rounded-2xl border border-zinc-200 bg-white p-5 hover:bg-zinc-50">
+                <a href="{{ route('admin.orders.index') }}" class="rounded-2xl border border-zinc-200 bg-white p-5 hover:bg-zinc-50">
                     <div class="text-sm font-semibold">Penjualan</div>
-                    <div class="mt-1 text-xs text-zinc-500">Transaksi & ringkasan harian</div>
+                    <div class="mt-1 text-xs text-zinc-500">Order online, kasir, dan riwayat</div>
                 </a>
                 <a href="{{ route('admin.promos.index') }}" class="rounded-2xl border border-zinc-200 bg-white p-5 hover:bg-zinc-50">
                     <div class="text-sm font-semibold">Promo</div>

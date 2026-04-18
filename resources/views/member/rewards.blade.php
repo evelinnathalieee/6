@@ -61,7 +61,6 @@
                             <td class="px-6 py-4 text-zinc-800">{{ $r->redeemed_at?->format('d M Y H:i') ?? '—' }}</td>
                             <td class="px-6 py-4 text-zinc-800">
                                 <div class="font-semibold">{{ $r->transaction?->order_number ?? '—' }}</div>
-                                <div class="mt-1 font-mono text-xs text-zinc-500">{{ $r->transaction?->transaction_code ?? '' }}</div>
                             </td>
                             <td class="px-6 py-4 text-zinc-800">{{ $r->reward_label }}</td>
                             <td class="px-6 py-4 text-right font-semibold">Rp {{ number_format((int) $r->reward_value, 0, ',', '.') }}</td>

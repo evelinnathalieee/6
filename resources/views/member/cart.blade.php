@@ -1,4 +1,4 @@
-@extends(auth()->check() && auth()->user()->isMember() ? 'layouts.member' : 'layouts.public')
+@extends('layouts.member')
 
 @section('title', 'Keranjang — Westland Coffee')
 
@@ -45,7 +45,11 @@
                                     </td>
                                     <td class="px-5 py-4 text-zinc-800">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
                                     <td class="px-5 py-4">
-                                        <input name="items[{{ $item->id }}]" value="{{ $line['qty'] }}" class="input w-24" />
+                                        <div class="inline-flex items-center overflow-hidden rounded-xl border border-zinc-200 bg-white">
+                                            <button type="button" data-qty-minus="{{ $item->id }}" class="h-10 w-10 text-zinc-700 hover:bg-zinc-50">−</button>
+                                            <input type="number" min="0" max="99" inputmode="numeric" name="items[{{ $item->id }}]" value="{{ $line['qty'] }}" class="h-10 w-20 border-x border-zinc-200 px-3 text-center text-sm font-semibold outline-none focus:border-brand-500" />
+                                            <button type="button" data-qty-plus="{{ $item->id }}" class="h-10 w-10 text-zinc-700 hover:bg-zinc-50">+</button>
+                                        </div>
                                     </td>
                                     <td class="px-5 py-4 text-right font-semibold">Rp {{ number_format($line['lineTotal'], 0, ',', '.') }}</td>
                                 </tr>
@@ -74,6 +78,33 @@
             (function () {
                 const form = document.querySelector('form[action="{{ route('cart.update') }}"]');
                 if (!form) return;
+
+                function scheduleSubmit() {
+                    if (form._t) clearTimeout(form._t);
+                    form._t = setTimeout(() => form.submit(), 500);
+                }
+
+                form.querySelectorAll('[data-qty-minus]').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-qty-minus');
+                        const input = form.querySelector('input[name="items[' + id + ']"]');
+                        if (!input) return;
+                        const v = parseInt(input.value || '0', 10) || 0;
+                        input.value = String(Math.max(0, v - 1));
+                        scheduleSubmit();
+                    });
+                });
+
+                form.querySelectorAll('[data-qty-plus]').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-qty-plus');
+                        const input = form.querySelector('input[name="items[' + id + ']"]');
+                        if (!input) return;
+                        const v = parseInt(input.value || '0', 10) || 0;
+                        input.value = String(Math.min(99, v + 1));
+                        scheduleSubmit();
+                    });
+                });
 
                 let t = null;
                 form.addEventListener('input', (e) => {

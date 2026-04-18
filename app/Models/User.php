@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'email',
         'phone',
         'member_code',
+        'avatar_path',
         'password',
         'role',
         'loyalty_stamps',
@@ -73,6 +75,21 @@ class User extends Authenticatable
     public function rewardRedemptions()
     {
         return $this->hasMany(\App\Models\RewardRedemption::class);
+    }
+
+    public function avatarSrc(): ?string
+    {
+        if (! $this->avatar_path) {
+            return null;
+        }
+
+        if (Str::startsWith($this->avatar_path, ['http://', 'https://'])) {
+            return $this->avatar_path;
+        }
+
+        $path = ltrim($this->avatar_path, '/');
+
+        return '/storage/'.$path;
     }
 
     public function totalRewardsEarned(int $stampsPerReward = 5): int

@@ -33,6 +33,9 @@ Route::middleware('guest')->group(function () {
 
 Route::prefix('member')->middleware('role:member')->group(function () {
     Route::get('/', \App\Http\Controllers\Member\ProfileController::class)->name('member.profile');
+    Route::get('/profile/edit', [\App\Http\Controllers\Member\ProfileEditController::class, 'edit'])->name('member.profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\Member\ProfileEditController::class, 'update'])->name('member.profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\Member\ProfileEditController::class, 'password'])->name('member.profile.password');
     Route::get('/transactions', \App\Http\Controllers\Member\TransactionsController::class)->name('member.transactions');
     Route::get('/rewards', \App\Http\Controllers\Member\RewardsController::class)->name('member.rewards');
     Route::get('/checkout', [\App\Http\Controllers\Member\CheckoutController::class, 'show'])->name('member.checkout');
@@ -44,6 +47,9 @@ Route::prefix('admin')->middleware('role:admin')->group(function () {
     Route::get('/', \App\Http\Controllers\Admin\DashboardController::class)->name('admin.dashboard');
     Route::post('/logout', [\App\Http\Controllers\Auth\AdminAuthController::class, 'logout'])->name('admin.logout');
     Route::get('/notifications', \App\Http\Controllers\Admin\NotificationsController::class)->name('admin.notifications');
+
+    Route::get('/orders', [\App\Http\Controllers\Admin\OrdersController::class, 'index'])->name('admin.orders.index');
+    Route::get('/pos', [\App\Http\Controllers\Admin\PosScreenController::class, 'show'])->name('admin.pos');
 
     Route::get('/loyalty', [\App\Http\Controllers\Admin\LoyaltySettingsController::class, 'edit'])->name('admin.loyalty.edit');
     Route::put('/loyalty', [\App\Http\Controllers\Admin\LoyaltySettingsController::class, 'update'])->name('admin.loyalty.update');
@@ -66,8 +72,11 @@ Route::prefix('admin')->middleware('role:admin')->group(function () {
     Route::post('/stocks/{ingredient}/movement', [\App\Http\Controllers\Admin\StockController::class, 'storeMovement'])->name('admin.stocks.movement.store');
 
     Route::get('/sales', [\App\Http\Controllers\Admin\SalesController::class, 'index'])->name('admin.sales.index');
+    Route::get('/sales/{transaction}', [\App\Http\Controllers\Admin\SalesShowController::class, 'show'])->name('admin.sales.show');
     Route::get('/sales/create', [\App\Http\Controllers\Admin\TransactionController::class, 'create'])->name('admin.sales.create');
     Route::post('/sales', [\App\Http\Controllers\Admin\TransactionController::class, 'store'])->name('admin.sales.store');
+    Route::post('/sales/{transaction}/pay', [\App\Http\Controllers\Admin\PosController::class, 'pay'])->name('admin.sales.pay');
+    Route::post('/sales/{transaction}/cancel', [\App\Http\Controllers\Admin\PosController::class, 'cancel'])->name('admin.sales.cancel');
 
     Route::get('/promos', [\App\Http\Controllers\Admin\PromoController::class, 'index'])->name('admin.promos.index');
     Route::get('/promos/create', [\App\Http\Controllers\Admin\PromoController::class, 'create'])->name('admin.promos.create');

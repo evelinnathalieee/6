@@ -43,6 +43,14 @@
                 @error('order_type') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
             </div>
             <div>
+                <label class="text-sm text-zinc-700">Metode bayar</label>
+                <select name="payment_method" class="input" required>
+                    <option value="cash" {{ old('payment_method', 'cash') === 'cash' ? 'selected' : '' }}>Cash</option>
+                    <option value="qris" {{ old('payment_method') === 'qris' ? 'selected' : '' }}>QRIS</option>
+                </select>
+                @error('payment_method') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
+            </div>
+            <div>
                 <label class="text-sm text-zinc-700">Promo (opsional)</label>
                 <select name="promo_id" class="input">
                     <option value="">— tanpa promo —</option>
@@ -54,14 +62,14 @@
                 </select>
                 @error('promo_id') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
             </div>
-            <div class="rounded-2xl border border-brand-200 bg-brand-50 p-4 text-sm text-zinc-700 md:col-span-2">
+            <div class="rounded-2xl border border-brand-200 bg-brand-50 p-4 text-sm text-zinc-700 md:col-span-1">
                 Nomor pemesanan dibuat otomatis saat transaksi disimpan.
             </div>
         </div>
 
         <div class="mt-6">
-            <label class="text-sm text-zinc-700">Catatan (opsional)</label>
-            <textarea name="note" rows="2" class="input">{{ old('note') }}</textarea>
+            <label class="text-sm text-zinc-700">Catatan</label>
+            <textarea name="note" rows="2" class="input" required>{{ old('note') }}</textarea>
             @error('note') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
         </div>
 

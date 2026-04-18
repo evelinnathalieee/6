@@ -5,24 +5,6 @@
 @section('content')
     <x-page.title title="Menu" subtitle="Pilih kopi atau non-kopi, tambah ke keranjang, lalu checkout." />
 
-    @auth
-        @if (auth()->user()->isMember())
-            <div class="mt-6 rounded-3xl border border-brand-200 bg-white p-5 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
-                <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                    <div class="text-sm text-zinc-700">
-                        Login sebagai <span class="font-extrabold text-zinc-900">{{ auth()->user()->name }}</span> • Stamp:
-                        <span class="font-extrabold text-brand-700">{{ auth()->user()->loyalty_stamps }}</span>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <a href="{{ route('member.profile') }}" class="rounded-xl bg-brand-500 px-4 py-2 text-xs font-extrabold text-white hover:bg-brand-600">Dashboard Member</a>
-                        <a href="{{ route('member.rewards') }}" class="rounded-xl bg-white px-4 py-2 text-xs font-extrabold text-brand-700 shadow-sm ring-1 ring-brand-200 hover:bg-brand-50">Reward</a>
-                        <a href="{{ route('member.transactions') }}" class="rounded-xl bg-white px-4 py-2 text-xs font-extrabold text-brand-700 shadow-sm ring-1 ring-brand-200 hover:bg-brand-50">Riwayat</a>
-                    </div>
-                </div>
-            </div>
-        @endif
-    @endauth
-
     <div class="mt-8 grid gap-8">
         @forelse ($menuByCategory as $category => $items)
             <section class="rounded-3xl border border-zinc-200 bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.04)]">

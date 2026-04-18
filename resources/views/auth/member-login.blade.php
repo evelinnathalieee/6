@@ -5,7 +5,7 @@
 @section('content')
     <div class="mx-auto max-w-lg rounded-3xl border border-zinc-200 bg-white p-8">
         <h1 class="text-2xl font-semibold tracking-tight">Login</h1>
-        <p class="mt-2 text-sm text-zinc-600">Masuk untuk fitur member. Jika akunmu admin, akan otomatis masuk ke dashboard admin.</p>
+        <p class="mt-2 text-sm text-zinc-600">Masuk untuk melanjutkan.</p>
 
         <form method="POST" action="{{ route('login.store') }}" class="mt-6 space-y-4">
             @csrf

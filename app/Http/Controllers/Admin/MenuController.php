@@ -41,9 +41,9 @@ class MenuController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'category' => ['required', 'in:kopi,non_kopi'],
             'price' => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string', 'max:500'],
+            'description' => ['required', 'string', 'max:500'],
             'is_featured' => ['nullable', 'boolean'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => ['required', 'image', 'max:2048'],
         ]);
 
         $slugBase = Str::slug($data['name']);
@@ -54,10 +54,7 @@ class MenuController extends Controller
             $i++;
         }
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->storePublicly('menu', 'public');
-        }
+        $imagePath = $request->file('image')->storePublicly('menu', 'public');
 
         MenuItem::query()->create([
             ...$data,
@@ -82,16 +79,10 @@ class MenuController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'category' => ['required', 'in:kopi,non_kopi'],
             'price' => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string', 'max:500'],
+            'description' => ['required', 'string', 'max:500'],
             'is_featured' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'max:2048'],
-            'remove_image' => ['nullable', 'boolean'],
         ]);
-
-        if ($request->boolean('remove_image') && $menuItem->image_url && ! Str::startsWith($menuItem->image_url, ['http://', 'https://'])) {
-            Storage::disk('public')->delete($menuItem->image_url);
-            $menuItem->image_url = null;
-        }
 
         if ($request->hasFile('image')) {
             if ($menuItem->image_url && ! Str::startsWith($menuItem->image_url, ['http://', 'https://'])) {
@@ -99,6 +90,10 @@ class MenuController extends Controller
             }
 
             $menuItem->image_url = $request->file('image')->storePublicly('menu', 'public');
+        }
+
+        if (! $menuItem->image_url) {
+            return back()->withErrors(['image' => 'Gambar wajib diisi.'])->withInput();
         }
 
         $menuItem->update([

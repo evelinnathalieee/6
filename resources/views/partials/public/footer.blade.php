@@ -6,7 +6,7 @@
         </div>
         <div class="text-sm text-zinc-600">
             <div class="font-semibold text-zinc-900">Jam Operasional</div>
-            <div class="mt-2">Senin–Minggu • 10.00–23.00</div>
+            <div class="mt-2">Senin–Minggu • 18.00–02.00</div>
             <div class="mt-1">Cut Nyak Dien, Pekanbaru</div>
         </div>
         <div class="text-sm text-zinc-600">

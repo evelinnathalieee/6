@@ -39,13 +39,14 @@
 
         <div class="rounded-3xl bg-gradient-to-b from-brand-600 via-brand-500 to-brand-600 p-6 text-white shadow-sm ring-1 ring-white/10">
             <div class="chip">Pembayaran</div>
-            <div class="mt-3 text-xl font-black">Bayar sekarang</div>
-            <div class="mt-2 text-sm text-white/90">Nomor pesanan + stamp otomatis. Reward bisa dipakai langsung.</div>
+            <div class="mt-3 text-xl font-black">Buat pesanan</div>
+            <div class="mt-2 text-sm text-white/90">Status awal: pending. Admin akan konfirmasi saat pembayaran.</div>
 
             <form method="POST" action="{{ route('member.checkout.pay') }}" class="mt-6">
-            @csrf
-            <div>
-                <label class="text-sm font-extrabold text-white/95">Tipe pesanan</label>
+                @csrf
+
+                <div>
+                    <label class="text-sm font-extrabold text-white/95">Tipe pesanan</label>
                     <select name="order_type" class="mt-1 w-full rounded-xl border border-white/20 bg-white/95 px-4 py-3 text-sm font-semibold text-zinc-900 outline-none focus:border-white" required>
                         <option value="dine_in" {{ old('order_type', 'dine_in') === 'dine_in' ? 'selected' : '' }}>Dine in</option>
                         <option value="take_away" {{ old('order_type') === 'take_away' ? 'selected' : '' }}>Take away</option>
@@ -53,83 +54,34 @@
                     @error('order_type') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
                 </div>
 
-                <div class="mt-4 rounded-2xl bg-white/95 p-4 text-zinc-900 shadow-sm ring-1 ring-white/30">
-                    <div class="flex items-center justify-between gap-3">
-                        <div>
-                            <div class="text-sm font-extrabold">Voucher / Promo</div>
-                            <div class="mt-1 text-xs text-zinc-600" id="promo_selected_text">Tidak pakai promo</div>
-                        </div>
-                        <details class="relative">
-                            <summary class="cursor-pointer list-none rounded-xl bg-brand-500 px-4 py-2 text-xs font-extrabold text-white hover:bg-brand-600">Pilih</summary>
-                            <div class="absolute right-0 mt-2 w-[320px] max-w-[calc(100vw-4rem)] overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl">
-                                <div class="px-4 py-3 text-xs font-extrabold text-zinc-500">Promo tersedia</div>
-                                <div class="max-h-72 overflow-y-auto divide-y divide-zinc-200">
-                                    <label class="flex cursor-pointer items-start gap-3 px-4 py-3 hover:bg-zinc-50">
-                                        <input type="radio" name="promo_id" value="" {{ old('promo_id') ? '' : 'checked' }} class="mt-1 h-4 w-4 text-brand-600 focus:ring-brand-500">
-                                        <div>
-                                            <div class="text-sm font-extrabold text-zinc-900">Tanpa promo</div>
-                                            <div class="mt-0.5 text-xs text-zinc-500">Bayar normal.</div>
-                                        </div>
-                                    </label>
-
-                                    @foreach ($promos as $p)
-                                        @php($disabled = ! $p['selectable'])
-                                        <label class="flex items-start gap-3 px-4 py-3 {{ $disabled ? 'opacity-60' : 'cursor-pointer hover:bg-zinc-50' }}">
-                                            <input
-                                                type="radio"
-                                                name="promo_id"
-                                                value="{{ $p['id'] }}"
-                                                class="mt-1 h-4 w-4 text-brand-600 focus:ring-brand-500"
-                                                {{ $disabled ? 'disabled' : '' }}
-                                                {{ (string) old('promo_id') === (string) $p['id'] ? 'checked' : '' }}
-                                                data-promo-name="{{ $p['name'] }}"
-                                                data-discount-type="{{ $p['discount_type'] }}"
-                                                data-discount-value="{{ (int) $p['discount_value'] }}"
-                                                data-min-subtotal="{{ (int) $p['min_subtotal'] }}"
-                                            >
-                                            <div class="min-w-0 flex-1">
-                                                <div class="flex items-start justify-between gap-3">
-                                                    <div class="text-sm font-extrabold text-zinc-900">{{ $p['name'] }}</div>
-                                                    <div class="badge bg-brand-50 text-brand-700">{{ $p['label'] }}</div>
-                                                </div>
-                                                <div class="mt-1 text-xs text-zinc-600">{{ \Illuminate\Support\Str::limit($p['description'], 70) }}</div>
-                                                <div class="mt-2 text-[11px] text-zinc-500">
-                                                    @if ((int) $p['min_subtotal'] > 0) Min Rp {{ number_format((int) $p['min_subtotal'], 0, ',', '.') }} @endif
-                                                    @if ($p['reason']) • {{ $p['reason'] }} @endif
-                                                </div>
-                                            </div>
-                                        </label>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </details>
-                    </div>
-                    @error('promo_id') <div class="mt-2 text-xs text-rose-600">{{ $message }}</div> @enderror
+                <div class="mt-4">
+                    <label class="text-sm font-extrabold text-white/95">Metode bayar</label>
+                    <select name="payment_method" class="mt-1 w-full rounded-xl border border-white/20 bg-white/95 px-4 py-3 text-sm font-semibold text-zinc-900 outline-none focus:border-white" required>
+                        <option value="cash" {{ old('payment_method', 'cash') === 'cash' ? 'selected' : '' }}>Cash</option>
+                        <option value="qris" {{ old('payment_method') === 'qris' ? 'selected' : '' }}>QRIS</option>
+                    </select>
+                    @error('payment_method') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
                 </div>
 
-                @if ($canUseReward)
-                    <div class="mt-4 rounded-2xl bg-white/95 p-4 text-zinc-900 shadow-sm ring-1 ring-white/30">
-                        <div class="flex items-start justify-between gap-3">
-                            <div>
-                                <div class="text-sm font-extrabold">Pakai 1 reward</div>
-                                <div class="mt-1 text-xs text-zinc-600">
-                                    {{ $rewardLabel ?? 'Gratis 1 minuman' }} • Diskon otomatis sebesar <span class="font-extrabold">Rp {{ number_format($rewardValue, 0, ',', '.') }}</span> (minuman termurah di keranjang).
-                                </div>
-                                <div class="mt-2 text-[11px] text-zinc-500">
-                                    Reward tersedia sekarang: <span class="font-semibold">{{ $availableRewardsNow }}</span>
-                                </div>
-                            </div>
-                            <label class="inline-flex cursor-pointer items-center gap-2">
-                                <input id="use_reward" type="checkbox" name="use_reward" value="1" {{ old('use_reward') ? 'checked' : '' }} class="h-5 w-5 rounded border-zinc-300 text-brand-600 focus:ring-brand-500">
-                                <span class="text-sm font-extrabold text-brand-700">Pakai</span>
-                            </label>
-                        </div>
-                    </div>
-                @else
-                    <div class="mt-4 rounded-2xl bg-white/10 p-4 text-xs text-white/85 ring-1 ring-white/15">
-                        Reward tersedia: <span class="font-extrabold">{{ $availableRewardsNow }}</span> • Kumpulkan {{ $stampsPerReward }} stamp untuk 1 reward.
-                    </div>
-                @endif
+                <div class="mt-4">
+                    <label class="text-sm font-extrabold text-white/95">Voucher / Promo</label>
+                    <select id="promo_select" name="promo_id" class="mt-1 w-full rounded-xl border border-white/20 bg-white/95 px-4 py-3 text-sm font-semibold text-zinc-900 outline-none focus:border-white">
+                        <option value="" data-discount-type="amount" data-discount-value="0">Tanpa promo</option>
+                        @foreach ($promos as $p)
+                            <option
+                                value="{{ $p['id'] }}"
+                                {{ (string) old('promo_id') === (string) $p['id'] ? 'selected' : '' }}
+                                {{ $p['selectable'] ? '' : 'disabled' }}
+                                data-promo-name="{{ $p['name'] }}"
+                                data-discount-type="{{ $p['discount_type'] }}"
+                                data-discount-value="{{ (int) $p['discount_value'] }}"
+                            >
+                                {{ $p['name'] }} — {{ $p['label'] }}@if($p['reason']) ({{ $p['reason'] }})@endif
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('promo_id') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
+                </div>
 
                 <div class="mt-4 rounded-2xl bg-white/10 p-4 text-sm ring-1 ring-white/15">
                     <div class="flex items-center justify-between">
@@ -140,17 +92,13 @@
                         <span id="promo_name">Promo</span>
                         <span id="promo_value" class="font-extrabold">Rp 0</span>
                     </div>
-                    <div id="discount_row" class="{{ $canUseReward ? '' : 'hidden' }} mt-1 flex items-center justify-between text-white/85">
-                        <span>Diskon reward</span>
-                        <span id="discount_value" class="font-extrabold">Rp 0</span>
-                    </div>
                     <div class="mt-2 flex items-center justify-between border-t border-white/15 pt-2">
-                        <span class="text-white/90">Total bayar</span>
+                        <span class="text-white/90">Total</span>
                         <span id="grand_total" class="text-xl font-black">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
-                <button class="btn-primary w-full">Bayar Sekarang</button>
+                <button class="btn-primary w-full">Kirim Pesanan</button>
             </form>
 
             <div class="mt-3">
@@ -161,25 +109,19 @@
 
     <script>
         (function () {
-            const checkbox = document.getElementById('use_reward');
-            const discountRow = document.getElementById('discount_row');
-            const discountValue = document.getElementById('discount_value');
             const grandTotal = document.getElementById('grand_total');
 
             const promoRow = document.getElementById('promo_row');
             const promoName = document.getElementById('promo_name');
             const promoValueEl = document.getElementById('promo_value');
-            const promoSelectedText = document.getElementById('promo_selected_text');
-            const promoRadios = document.querySelectorAll('input[name="promo_id"]');
+            const promoSelect = document.getElementById('promo_select');
 
             const subtotal = {{ (int) $total }};
-            const rewardValue = {{ (int) $rewardValue }};
 
             function calcPromoDiscount() {
-                const selected = document.querySelector('input[name="promo_id"]:checked');
+                const selected = promoSelect?.selectedOptions?.[0];
                 if (!selected || !selected.value) {
                     promoRow?.classList.add('hidden');
-                    if (promoSelectedText) promoSelectedText.textContent = 'Tidak pakai promo';
                     return 0;
                 }
 
@@ -194,26 +136,20 @@
                 if (promoName) promoName.textContent = name;
                 if (promoValueEl) promoValueEl.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(d);
                 promoRow?.classList.toggle('hidden', d <= 0);
-                if (promoSelectedText) promoSelectedText.textContent = name + ' (hemat Rp ' + new Intl.NumberFormat('id-ID').format(d) + ')';
 
                 return d;
             }
 
             function render() {
-                const useReward = checkbox ? checkbox.checked : false;
-                const rewardDiscount = useReward ? rewardValue : 0;
                 const promoDiscount = calcPromoDiscount();
 
-                const totalDiscount = Math.min(subtotal, promoDiscount + rewardDiscount);
+                const totalDiscount = Math.min(subtotal, promoDiscount);
                 const total = Math.max(0, subtotal - totalDiscount);
 
-                if (discountRow) discountRow.classList.toggle('hidden', !useReward);
-                if (discountValue) discountValue.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(rewardDiscount);
                 if (grandTotal) grandTotal.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
             }
 
-            checkbox?.addEventListener('change', render);
-            promoRadios.forEach(r => r.addEventListener('change', render));
+            promoSelect?.addEventListener('change', render);
             render();
         })();
     </script>

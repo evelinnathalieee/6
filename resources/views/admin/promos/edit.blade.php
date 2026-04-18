@@ -38,26 +38,30 @@
 
             <div class="md:col-span-2">
                 <label class="text-sm text-zinc-700">Minimal pembelanjaan (Rp)</label>
-                <input name="min_subtotal" value="{{ old('min_subtotal', $promo->min_subtotal ?? 0) }}" class="input" />
+                <input name="min_subtotal" value="{{ old('min_subtotal', $promo->min_subtotal ?? 0) }}" class="input" required />
                 @error('min_subtotal') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
             </div>
 
             <div>
-                <label class="text-sm text-zinc-700">Mulai (opsional)</label>
-                <input type="datetime-local" name="starts_at" value="{{ old('starts_at', optional($promo->starts_at)->format('Y-m-d\\TH:i')) }}" class="input" />
+                <label class="text-sm text-zinc-700">Mulai</label>
+                <input type="datetime-local" name="starts_at" value="{{ old('starts_at', optional($promo->starts_at)->format('Y-m-d\\TH:i')) }}" class="input" required />
                 @error('starts_at') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
             </div>
             <div>
-                <label class="text-sm text-zinc-700">Selesai (opsional)</label>
-                <input type="datetime-local" name="ends_at" value="{{ old('ends_at', optional($promo->ends_at)->format('Y-m-d\\TH:i')) }}" class="input" />
+                <label class="text-sm text-zinc-700">Selesai</label>
+                <input type="datetime-local" name="ends_at" value="{{ old('ends_at', optional($promo->ends_at)->format('Y-m-d\\TH:i')) }}" class="input" required />
                 @error('ends_at') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
             </div>
         </div>
 
-        <label class="mt-4 flex items-center gap-2 text-sm text-zinc-700">
-            <input type="checkbox" name="is_enabled" value="1" {{ old('is_enabled', $promo->is_enabled) ? 'checked' : '' }} class="accent-brand-500" />
-            Aktifkan promo
-        </label>
+        <div class="mt-4">
+            <label class="text-sm text-zinc-700">Status</label>
+            <select name="is_enabled" class="input" required>
+                <option value="1" {{ old('is_enabled', $promo->is_enabled ? '1' : '0') === '1' ? 'selected' : '' }}>Aktif</option>
+                <option value="0" {{ old('is_enabled', $promo->is_enabled ? '1' : '0') === '0' ? 'selected' : '' }}>Nonaktif</option>
+            </select>
+            @error('is_enabled') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
+        </div>
 
         <div class="mt-6 flex gap-3">
             <button class="btn-primary">Simpan</button>

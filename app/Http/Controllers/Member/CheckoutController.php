@@ -43,10 +43,6 @@ class CheckoutController extends Controller
         }
 
         $stampsPerReward = Settings::getInt('loyalty.stamps_per_reward', 5);
-        $rewardLabel = Settings::get('loyalty.reward_label', 'Gratis 1 minuman');
-        $availableRewardsNow = $user->availableRewards($stampsPerReward);
-        $rewardValue = (int) ($cheapestUnitPrice ?? 0);
-        $canUseReward = $rewardValue > 0 && $availableRewardsNow > 0;
 
         $now = now();
         $promos = Promo::query()
@@ -93,10 +89,6 @@ class CheckoutController extends Controller
             'lines' => $lines,
             'total' => $total,
             'stampsPerReward' => $stampsPerReward,
-            'availableRewardsNow' => $availableRewardsNow,
-            'rewardValue' => $rewardValue,
-            'canUseReward' => $canUseReward,
-            'rewardLabel' => $rewardLabel,
             'promos' => $promos,
         ]);
     }
@@ -112,8 +104,8 @@ class CheckoutController extends Controller
 
         $data = $request->validate([
             'order_type' => ['required', 'in:dine_in,take_away'],
-            'use_reward' => ['nullable', 'boolean'],
             'promo_id' => ['nullable', 'integer', 'exists:promos,id'],
+            'payment_method' => ['required', 'in:cash,qris'],
         ]);
 
         [$lines, $total] = CartController::cartSummary($request);
@@ -141,13 +133,7 @@ class CheckoutController extends Controller
                 }
             }
 
-            $stampsPerReward = Settings::getInt('loyalty.stamps_per_reward', 5);
-            $rewardLabel = Settings::get('loyalty.reward_label', 'Gratis 1 minuman');
-            $availableNow = $user->availableRewards($stampsPerReward);
-            $wantsReward = (bool) ($data['use_reward'] ?? false);
-            $useReward = $wantsReward && $availableNow > 0 && (int) ($cheapestUnitPrice ?? 0) > 0;
-
-            $rewardDiscount = $useReward ? (int) $cheapestUnitPrice : 0;
+            // Loyalty/reward dicatat saat admin menandai transaksi PAID.
 
             $promo = null;
             $promoDiscount = 0;
@@ -165,7 +151,7 @@ class CheckoutController extends Controller
                 $promoDiscount = $promo->calculateDiscount((int) $total);
             }
 
-            $discount = min((int) $total, $promoDiscount + $rewardDiscount);
+            $discount = min((int) $total, $promoDiscount);
             $grandTotal = max(0, (int) $total - $discount);
 
             $trx = Transaction::query()->create([
@@ -174,18 +160,20 @@ class CheckoutController extends Controller
                 'promo_id' => $promo?->id,
                 'promo_name_snapshot' => $promo?->name,
                 'purchased_at' => $purchasedAt,
+                'payment_status' => Transaction::PAYMENT_PENDING,
+                'payment_method' => $data['payment_method'],
                 'order_type' => $request->input('order_type'),
                 'order_number' => $orderNumber,
+                'sales_channel' => Transaction::CHANNEL_ONLINE,
                 'subtotal' => $total,
                 'promo_discount' => $promoDiscount,
-                'reward_discount' => $rewardDiscount,
-                'reward_redeemed_count' => $useReward ? 1 : 0,
+                'reward_discount' => 0,
+                'reward_redeemed_count' => 0,
                 'discount' => $discount,
                 'total' => $grandTotal,
                 'note' => trim(implode(' • ', array_values(array_filter([
                     $promo ? 'Promo: '.$promo->name : null,
-                    $useReward ? 'Pakai reward' : null,
-                    'Checkout member (simulasi)',
+                    'Checkout member',
                 ])))),
             ]);
 
@@ -204,23 +192,8 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            if ($totalQty > 0) {
-                $user->increment('loyalty_stamps', $totalQty);
-            }
-
-            if ($useReward) {
-                $user->increment('loyalty_redeemed', 1);
-
-                RewardRedemption::query()->create([
-                    'user_id' => $user->id,
-                    'transaction_id' => $trx->id,
-                    'redeemed_at' => $purchasedAt,
-                    'stamps_per_reward' => $stampsPerReward,
-                    'reward_label' => $rewardLabel ?: 'Gratis 1 minuman',
-                    'reward_value' => $rewardDiscount,
-                    'note' => 'Redeem saat checkout member',
-                ]);
-            }
+            // POS flow: transaksi member dibuat sebagai PENDING sampai admin konfirmasi sudah dibayar.
+            // Stamp & redeem reward dicatat saat admin menandai transaksi PAID (biar tidak bisa iseng order tanpa bayar).
 
             $request->session()->forget('cart');
             });
@@ -228,7 +201,7 @@ class CheckoutController extends Controller
             return back()->with('error', $e->getMessage())->withInput();
         }
 
-        return redirect()->route('member.transactions')->with('success', 'Pembayaran berhasil.');
+        return redirect()->route('member.transactions')->with('success', 'Pesanan dibuat.');
     }
 
     private function generateCode($dateTime): string

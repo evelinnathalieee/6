@@ -32,25 +32,19 @@
             </div>
 
             <div class="md:col-span-2">
-                <label class="text-sm text-zinc-700">Deskripsi (opsional)</label>
-                <textarea name="description" rows="3" class="input">{{ old('description', $menuItem->description) }}</textarea>
+                <label class="text-sm text-zinc-700">Deskripsi</label>
+                <textarea name="description" rows="3" class="input" required>{{ old('description', $menuItem->description) }}</textarea>
                 @error('description') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
             </div>
 
             <div class="md:col-span-2">
-                <label class="text-sm text-zinc-700">Gambar (opsional)</label>
-                <input type="file" name="image" accept="image/*" class="input" />
+                <label class="text-sm text-zinc-700">Gambar</label>
+                <input type="file" name="image" accept="image/*" class="input" {{ $menuItem->image_url ? '' : 'required' }} />
                 <div class="mt-2 flex flex-col gap-2 md:flex-row md:items-center">
                     @if ($menuItem->imageSrc())
                         <img src="{{ $menuItem->imageSrc() }}" alt="{{ $menuItem->name }}" class="h-20 w-20 rounded-xl border border-zinc-200 object-cover" />
                     @else
-                        <div class="text-xs text-zinc-500">Belum ada gambar.</div>
-                    @endif
-                    @if ($menuItem->image_url)
-                        <label class="flex items-center gap-2 text-sm text-zinc-700">
-                            <input type="checkbox" name="remove_image" value="1" class="accent-brand-500" />
-                            Hapus gambar saat ini
-                        </label>
+                        <div class="text-xs text-zinc-500">Wajib upload gambar.</div>
                     @endif
                 </div>
                 @error('image') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror

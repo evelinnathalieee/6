@@ -15,7 +15,6 @@
                         <th class="px-5 py-4">Transaksi</th>
                         <th class="px-5 py-4">Stamp</th>
                         <th class="px-5 py-4">Reward</th>
-                        <th class="px-5 py-4"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200">
@@ -34,9 +33,6 @@
                             <td class="px-5 py-4 text-zinc-800">
                                 <div class="font-semibold">{{ $m->availableRewards($stampsPerReward) }}</div>
                                 <div class="mt-1 text-xs text-zinc-500">Dipakai: {{ $m->loyalty_redeemed }}</div>
-                            </td>
-                            <td class="px-5 py-4 text-right">
-                                <a href="{{ route('admin.sales.create', ['member_email' => $m->email]) }}" class="rounded-lg bg-brand-500 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-600">Catat transaksi</a>
                             </td>
                         </tr>
                     @endforeach

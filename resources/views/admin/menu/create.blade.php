@@ -31,15 +31,14 @@
             </div>
 
             <div class="md:col-span-2">
-                <label class="text-sm text-zinc-700">Deskripsi (opsional)</label>
-                <textarea name="description" rows="3" class="input">{{ old('description') }}</textarea>
+                <label class="text-sm text-zinc-700">Deskripsi</label>
+                <textarea name="description" rows="3" class="input" required>{{ old('description') }}</textarea>
                 @error('description') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
             </div>
 
             <div class="md:col-span-2">
-                <label class="text-sm text-zinc-700">Gambar (opsional)</label>
-                <input type="file" name="image" accept="image/*" class="input" />
-                <div class="mt-1 text-xs text-zinc-500">Max 2MB. Disimpan ke storage publik.</div>
+                <label class="text-sm text-zinc-700">Gambar</label>
+                <input type="file" name="image" accept="image/*" class="input" required />
                 @error('image') <div class="mt-1 text-xs text-rose-600">{{ $message }}</div> @enderror
             </div>
         </div>

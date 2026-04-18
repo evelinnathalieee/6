@@ -28,10 +28,10 @@ class PromoController extends Controller
             'description' => ['required', 'string', 'max:1000'],
             'discount_type' => ['required', 'in:amount,percent'],
             'discount_value' => ['required', 'integer', 'min:0', 'max:100000000'],
-            'min_subtotal' => ['nullable', 'integer', 'min:0', 'max:100000000'],
-            'starts_at' => ['nullable', 'date'],
-            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
-            'is_enabled' => ['nullable', 'boolean'],
+            'min_subtotal' => ['required', 'integer', 'min:0', 'max:100000000'],
+            'starts_at' => ['required', 'date'],
+            'ends_at' => ['required', 'date', 'after_or_equal:starts_at'],
+            'is_enabled' => ['required', 'in:0,1'],
         ]);
 
         if ($data['discount_type'] === 'percent' && (int) $data['discount_value'] > 100) {
@@ -41,8 +41,8 @@ class PromoController extends Controller
         Promo::query()->create([
             ...$data,
             'slug' => Str::slug($data['name']).'-'.Str::lower(Str::random(4)),
-            'min_subtotal' => (int) ($data['min_subtotal'] ?? 0),
-            'is_enabled' => (bool) ($data['is_enabled'] ?? true),
+            'min_subtotal' => (int) $data['min_subtotal'],
+            'is_enabled' => (bool) ((int) $data['is_enabled']),
         ]);
 
         return redirect()->route('admin.promos.index')->with('success', 'Promo dibuat.');
@@ -60,10 +60,10 @@ class PromoController extends Controller
             'description' => ['required', 'string', 'max:1000'],
             'discount_type' => ['required', 'in:amount,percent'],
             'discount_value' => ['required', 'integer', 'min:0', 'max:100000000'],
-            'min_subtotal' => ['nullable', 'integer', 'min:0', 'max:100000000'],
-            'starts_at' => ['nullable', 'date'],
-            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
-            'is_enabled' => ['nullable', 'boolean'],
+            'min_subtotal' => ['required', 'integer', 'min:0', 'max:100000000'],
+            'starts_at' => ['required', 'date'],
+            'ends_at' => ['required', 'date', 'after_or_equal:starts_at'],
+            'is_enabled' => ['required', 'in:0,1'],
         ]);
 
         if ($data['discount_type'] === 'percent' && (int) $data['discount_value'] > 100) {
@@ -72,8 +72,8 @@ class PromoController extends Controller
 
         $promo->update([
             ...$data,
-            'min_subtotal' => (int) ($data['min_subtotal'] ?? 0),
-            'is_enabled' => (bool) ($data['is_enabled'] ?? false),
+            'min_subtotal' => (int) $data['min_subtotal'],
+            'is_enabled' => (bool) ((int) $data['is_enabled']),
         ]);
 
         return redirect()->route('admin.promos.index')->with('success', 'Promo diperbarui.');

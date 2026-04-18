@@ -3,58 +3,89 @@
 @section('title', 'Update Stok — Westland Coffee')
 
 @section('content')
-    <div class="flex flex-col gap-1">
-        <h1 class="text-2xl font-semibold tracking-tight">Update Stok</h1>
-        <p class="text-sm text-zinc-600">Bahan: <span class="font-semibold text-zinc-900">{{ $ingredient->name }}</span> (stok saat ini: {{ $ingredient->current_stock }} {{ $ingredient->unit }})</p>
-    </div>
+    <x-page.title title="Update Stok" subtitle="{{ $ingredient->name }} • stok saat ini {{ rtrim(rtrim(number_format((float) $ingredient->current_stock, 2, '.', ''), '0'), '.') }} {{ $ingredient->unit }}" />
 
-    <div class="mt-8 grid gap-4 md:grid-cols-3">
-        <form method="POST" action="{{ route('admin.stocks.movement.store', $ingredient) }}" class="rounded-3xl border border-zinc-200 bg-white p-6 md:col-span-2">
+    <div class="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <form method="POST" action="{{ route('admin.stocks.movement.store', $ingredient) }}" class="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">
             @csrf
 
-            <div class="grid gap-4 md:grid-cols-2">
-                <div>
-                    <label class="text-sm text-zinc-700">Tipe</label>
-                    <select name="type" class="input">
-                        <option value="in">Stok masuk</option>
-                        <option value="out">Stok keluar</option>
-                        <option value="adjust">Set stok (adjust)</option>
-                    </select>
-                    @error('type') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
+            <div class="border-b border-zinc-200 bg-gradient-to-r from-brand-50 via-white to-white px-6 py-5">
+                <div class="text-sm font-extrabold text-zinc-900">Form update stok</div>
+                <div class="mt-1 text-xs text-zinc-500">Pilih tipe update, isi jumlah, lalu simpan.</div>
+            </div>
+
+            <div class="space-y-5 px-6 py-6">
+                <div class="grid gap-5 md:grid-cols-2">
+                    <div>
+                        <label class="text-sm font-extrabold text-zinc-800">Tipe update</label>
+                        <select name="type" class="input mt-2" required>
+                            <option value="in">Stok masuk</option>
+                            <option value="out">Stok keluar</option>
+                            <option value="adjust">Set stok</option>
+                        </select>
+                        @error('type') <div class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-extrabold text-zinc-800">Jumlah ({{ $ingredient->unit }})</label>
+                        <input name="quantity" type="number" min="0.01" step="0.01" value="{{ old('quantity') }}" class="input mt-2" required />
+                        @error('quantity') <div class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</div> @enderror
+                    </div>
                 </div>
 
-                <div>
-                    <label class="text-sm text-zinc-700">Jumlah ({{ $ingredient->unit }})</label>
-                    <input name="quantity" value="{{ old('quantity') }}" class="input" required />
-                    @error('quantity') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
+                <div class="grid gap-5 md:grid-cols-2">
+                    <div>
+                        <label class="text-sm font-extrabold text-zinc-800">Catatan</label>
+                        <textarea name="note" rows="4" class="input mt-2">{{ old('note') }}</textarea>
+                        @error('note') <div class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-extrabold text-zinc-800">Tanggal / waktu</label>
+                        <input type="datetime-local" name="moved_at" value="{{ old('moved_at') }}" class="input mt-2" />
+                        @error('moved_at') <div class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</div> @enderror
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-4">
-                <label class="text-sm text-zinc-700">Catatan (opsional)</label>
-                <textarea name="note" rows="3" class="input">{{ old('note') }}</textarea>
-                @error('note') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
-            </div>
-
-            <div class="mt-4">
-                <label class="text-sm text-zinc-700">Tanggal/Waktu (opsional)</label>
-                <input type="datetime-local" name="moved_at" value="{{ old('moved_at') }}" class="input" />
-                @error('moved_at') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
-            </div>
-
-            <div class="mt-6 flex gap-3">
-                <button class="btn-primary">Simpan</button>
-                <a href="{{ route('admin.stocks.index') }}" class="btn-secondary">Batal</a>
+            <div class="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 bg-zinc-50 px-6 py-4">
+                <a href="{{ route('admin.stocks.index') }}" class="inline-flex items-center rounded-2xl px-4 py-2.5 text-sm font-extrabold text-zinc-600 transition hover:bg-white hover:text-zinc-900">Batal</a>
+                <button class="inline-flex items-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-brand-600 hover:shadow-md">Simpan update</button>
             </div>
         </form>
 
-        <div class="rounded-3xl border border-zinc-200 bg-white p-6">
-            <div class="text-sm font-semibold">Panduan cepat</div>
-            <ul class="mt-3 space-y-2 text-sm text-zinc-600">
-                <li><span class="font-semibold text-zinc-900">Stok masuk</span>: tambah stok (barang datang).</li>
-                <li><span class="font-semibold text-zinc-900">Stok keluar</span>: kurangi stok (pemakaian).</li>
-                <li><span class="font-semibold text-zinc-900">Set stok</span>: set angka stok terbaru (stock opname).</li>
-            </ul>
+        <div class="space-y-4">
+            <div class="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+                <div class="text-sm font-extrabold text-zinc-900">Ringkas</div>
+                <div class="mt-4 space-y-3">
+                    <div class="rounded-2xl bg-brand-50 px-4 py-3">
+                        <div class="text-xs font-extrabold text-brand-700">Stok sekarang</div>
+                        <div class="mt-1 text-xl font-black text-zinc-900">{{ rtrim(rtrim(number_format((float) $ingredient->current_stock, 2, '.', ''), '0'), '.') }} {{ $ingredient->unit }}</div>
+                    </div>
+                    <div class="rounded-2xl border border-zinc-200 px-4 py-3">
+                        <div class="text-xs font-extrabold text-zinc-500">Batas menipis</div>
+                        <div class="mt-1 text-sm font-semibold text-zinc-900">{{ rtrim(rtrim(number_format((float) $ingredient->low_stock_threshold, 2, '.', ''), '0'), '.') }} {{ $ingredient->unit }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+                <div class="text-sm font-extrabold text-zinc-900">Pilihan update</div>
+                <div class="mt-4 space-y-3 text-sm text-zinc-600">
+                    <div class="rounded-2xl border border-zinc-200 px-4 py-3">
+                        <div class="font-bold text-zinc-900">Stok masuk</div>
+                        <div class="mt-1">Tambah stok saat bahan baru datang.</div>
+                    </div>
+                    <div class="rounded-2xl border border-zinc-200 px-4 py-3">
+                        <div class="font-bold text-zinc-900">Stok keluar</div>
+                        <div class="mt-1">Kurangi stok untuk pemakaian harian.</div>
+                    </div>
+                    <div class="rounded-2xl border border-zinc-200 px-4 py-3">
+                        <div class="font-bold text-zinc-900">Set stok</div>
+                        <div class="mt-1">Samakan stok dengan hasil hitung aktual.</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

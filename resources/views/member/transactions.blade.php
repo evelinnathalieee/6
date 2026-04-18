@@ -12,8 +12,8 @@
                     <tr>
                         <th class="px-5 py-4">Tanggal</th>
                         <th class="px-5 py-4">Order</th>
-                        <th class="px-5 py-4">Kode</th>
                         <th class="px-5 py-4">Item</th>
+                        <th class="px-5 py-4">Status</th>
                         <th class="px-5 py-4 text-right">Total</th>
                     </tr>
                 </thead>
@@ -25,7 +25,6 @@
                                 <div class="font-semibold">{{ $trx->order_number ?? '—' }}</div>
                                 <div class="mt-1 text-xs text-zinc-500">{{ $trx->order_type === 'take_away' ? 'Take away' : 'Dine in' }}</div>
                             </td>
-                            <td class="px-5 py-4 font-mono text-xs text-zinc-600">{{ $trx->transaction_code }}</td>
                             <td class="px-5 py-4 text-zinc-800">
                                 <div class="space-y-1">
                                     @foreach ($trx->items as $it)
@@ -34,6 +33,14 @@
                                             <div class="text-xs text-zinc-500">x{{ $it->quantity }}</div>
                                         </div>
                                     @endforeach
+                                </div>
+                            </td>
+                            <td class="px-5 py-4">
+                                <div class="font-semibold text-zinc-800">{{ $trx->payment_method === 'qris' ? 'QRIS' : 'Cash' }}</div>
+                                <div class="mt-1">
+                                    <span class="badge {{ $trx->payment_status === 'paid' ? 'bg-emerald-50 text-emerald-700' : ($trx->payment_status === 'canceled' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-800') }}">
+                                        {{ $trx->payment_status === 'paid' ? 'paid' : ($trx->payment_status === 'canceled' ? 'canceled' : 'pending') }}
+                                    </span>
                                 </div>
                             </td>
                             <td class="px-5 py-4 text-right">

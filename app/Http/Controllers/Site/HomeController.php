@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\MenuItem;
 use App\Models\Promo;
+use App\Support\Settings;
 
 class HomeController extends Controller
 {
@@ -26,6 +27,7 @@ class HomeController extends Controller
         return view('pages.home', [
             'featuredMenu' => $featuredMenu,
             'promos' => $promos,
+            'stampsPerReward' => Settings::getInt('loyalty.stamps_per_reward', 5),
         ]);
     }
 }

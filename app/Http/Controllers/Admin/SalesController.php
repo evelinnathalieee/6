@@ -14,9 +14,14 @@ class SalesController extends Controller
         $date = $request->string('date')->toString();
         $day = $date ? Carbon::parse($date)->startOfDay() : now()->startOfDay();
         $dayEnd = (clone $day)->endOfDay();
+        $channel = $request->string('channel')->toString() === Transaction::CHANNEL_ONLINE
+            ? Transaction::CHANNEL_ONLINE
+            : Transaction::CHANNEL_POS;
 
         $transactions = Transaction::query()
             ->with(['user', 'items'])
+            ->where('sales_channel', $channel)
+            ->where('payment_status', Transaction::PAYMENT_PAID)
             ->whereBetween('purchased_at', [$day, $dayEnd])
             ->orderByDesc('purchased_at')
             ->paginate(15)
@@ -24,8 +29,22 @@ class SalesController extends Controller
 
         $summary = [
             'date' => $day,
-            'total_sales' => (int) Transaction::query()->whereBetween('purchased_at', [$day, $dayEnd])->sum('total'),
-            'total_transactions' => (int) Transaction::query()->whereBetween('purchased_at', [$day, $dayEnd])->count(),
+            'channel' => $channel,
+            'total_sales' => (int) Transaction::query()
+                ->where('sales_channel', $channel)
+                ->whereBetween('purchased_at', [$day, $dayEnd])
+                ->where('payment_status', Transaction::PAYMENT_PAID)
+                ->sum('total'),
+            'total_transactions' => (int) Transaction::query()
+                ->where('sales_channel', $channel)
+                ->whereBetween('purchased_at', [$day, $dayEnd])
+                ->where('payment_status', Transaction::PAYMENT_PAID)
+                ->count(),
+            'pending_transactions' => (int) Transaction::query()
+                ->where('sales_channel', $channel)
+                ->whereBetween('purchased_at', [$day, $dayEnd])
+                ->where('payment_status', Transaction::PAYMENT_PENDING)
+                ->count(),
         ];
 
         return view('admin.sales.index', [
@@ -34,4 +53,3 @@ class SalesController extends Controller
         ]);
     }
 }
-

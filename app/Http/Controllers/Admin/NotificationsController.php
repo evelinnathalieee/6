@@ -25,13 +25,15 @@ class NotificationsController extends Controller
 
         return response()->json([
             'server_time' => now()->toIso8601String(),
-            'today_sales' => (int) Transaction::query()->where('purchased_at', '>=', $today)->sum('total'),
-            'today_transactions' => (int) Transaction::query()->where('purchased_at', '>=', $today)->count(),
+            'today_sales' => (int) Transaction::query()->where('purchased_at', '>=', $today)->where('payment_status', Transaction::PAYMENT_PAID)->sum('total'),
+            'today_transactions' => (int) Transaction::query()->where('purchased_at', '>=', $today)->where('payment_status', Transaction::PAYMENT_PAID)->count(),
             'low_stock_count' => (int) $lowStockCount,
             'latest_transaction' => $latest ? [
                 'code' => $latest->transaction_code,
                 'order_number' => $latest->order_number,
                 'order_type' => $latest->order_type,
+                'payment_status' => $latest->payment_status,
+                'payment_method' => $latest->payment_method,
                 'total' => (int) $latest->total,
                 'discount' => (int) $latest->discount,
                 'purchased_at' => $latest->purchased_at instanceof Carbon ? $latest->purchased_at->toIso8601String() : null,

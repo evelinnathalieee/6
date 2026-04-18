@@ -12,14 +12,29 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    public const CHANNEL_POS = 'pos';
+    public const CHANNEL_ONLINE = 'online';
+
+    public const PAYMENT_PENDING = 'pending';
+    public const PAYMENT_PAID = 'paid';
+    public const PAYMENT_CANCELED = 'canceled';
+
+    public const METHOD_CASH = 'cash';
+    public const METHOD_QRIS = 'qris';
+
     protected $fillable = [
         'transaction_code',
         'user_id',
         'promo_id',
         'promo_name_snapshot',
         'purchased_at',
+        'payment_status',
+        'payment_method',
+        'paid_at',
+        'canceled_at',
         'order_type',
         'order_number',
+        'sales_channel',
         'subtotal',
         'promo_discount',
         'reward_discount',
@@ -33,6 +48,8 @@ class Transaction extends Model
     {
         return [
             'purchased_at' => 'datetime',
+            'paid_at' => 'datetime',
+            'canceled_at' => 'datetime',
         ];
     }
 
@@ -67,5 +84,10 @@ class Transaction extends Model
     public function items(): HasMany
     {
         return $this->hasMany(TransactionItem::class);
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->payment_status === self::PAYMENT_PAID;
     }
 }

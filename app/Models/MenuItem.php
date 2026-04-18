@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class MenuItem extends Model
@@ -31,6 +30,9 @@ class MenuItem extends Model
             return $this->image_url;
         }
 
-        return Storage::disk('public')->url($this->image_url);
+        $path = ltrim($this->image_url, '/');
+
+        // Use relative URL to avoid APP_URL/port mismatch issues on local dev.
+        return '/storage/'.$path;
     }
 }

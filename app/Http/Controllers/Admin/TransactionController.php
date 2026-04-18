@@ -42,8 +42,9 @@ class TransactionController extends Controller
         $data = $request->validate([
             'member_email' => ['nullable', 'email', 'max:190'],
             'order_type' => ['required', 'in:dine_in,take_away'],
+            'payment_method' => ['required', 'in:cash,qris'],
             'purchased_at' => ['nullable', 'date'],
-            'note' => ['nullable', 'string', 'max:500'],
+            'note' => ['required', 'string', 'max:500'],
             'use_reward' => ['nullable', 'boolean'],
             'promo_id' => ['nullable', 'integer', 'exists:promos,id'],
             'items' => ['required', 'array', 'min:1'],
@@ -135,15 +136,19 @@ class TransactionController extends Controller
                 'promo_id' => $promo?->id,
                 'promo_name_snapshot' => $promo?->name,
                 'purchased_at' => $purchasedAt,
+                'payment_status' => Transaction::PAYMENT_PAID,
+                'payment_method' => $data['payment_method'],
+                'paid_at' => now(),
                 'order_type' => $data['order_type'],
                 'order_number' => $orderNumber,
+                'sales_channel' => Transaction::CHANNEL_POS,
                 'subtotal' => $subtotal,
                 'promo_discount' => $promoDiscount,
                 'reward_discount' => $rewardDiscount,
                 'reward_redeemed_count' => $useReward ? 1 : 0,
                 'discount' => $discount,
                 'total' => $total,
-                'note' => $data['note'] ?? ($useReward ? 'Transaksi member (pakai reward)' : ($member ? 'Transaksi member' : 'Walk-in')),
+                'note' => $data['note'],
             ]);
 
             foreach ($rows as $r) {
@@ -186,7 +191,7 @@ class TransactionController extends Controller
             return back()->with('error', $e->getMessage())->withInput();
         }
 
-        return redirect()->route('admin.sales.index')->with('success', 'Transaksi berhasil dicatat.');
+        return redirect()->route('admin.pos')->with('success', 'Transaksi berhasil dicatat.');
     }
 
     private function generateCode($dateTime): string

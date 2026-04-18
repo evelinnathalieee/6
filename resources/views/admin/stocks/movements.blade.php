@@ -3,7 +3,7 @@
 @section('title', 'Log Stok — Westland Coffee')
 
 @section('content')
-    <x-page.title title="Log Stok" subtitle="Riwayat stok masuk/keluar/adjust." />
+    <x-page.title title="Log Stok" subtitle="Riwayat update stok terbaru." />
 
     <div class="mt-4">
         <a href="{{ route('admin.stocks.index') }}" class="rounded-xl bg-white px-4 py-3 text-sm font-extrabold text-brand-700 shadow-sm ring-1 ring-brand-200 hover:bg-brand-50">Kembali</a>
@@ -16,7 +16,7 @@
                     <tr>
                         <th class="px-5 py-4">Tanggal</th>
                         <th class="px-5 py-4">Bahan</th>
-                        <th class="px-5 py-4">Tipe</th>
+                        <th class="px-5 py-4">Update</th>
                         <th class="px-5 py-4">Jumlah</th>
                         <th class="px-5 py-4">Catatan</th>
                         <th class="px-5 py-4">Oleh</th>
@@ -28,7 +28,9 @@
                             <td class="px-5 py-4 text-zinc-800">{{ $m->moved_at->format('d M Y H:i') }}</td>
                             <td class="px-5 py-4 font-semibold">{{ $m->ingredient->name }}</td>
                             <td class="px-5 py-4">
-                                <span class="badge bg-zinc-100 text-zinc-800">{{ $m->type }}</span>
+                                <span class="badge {{ $m->type === 'in' ? 'bg-emerald-50 text-emerald-700' : ($m->type === 'out' ? 'bg-amber-50 text-amber-800' : 'bg-zinc-100 text-zinc-800') }}">
+                                    {{ $m->type === 'in' ? 'masuk' : ($m->type === 'out' ? 'keluar' : 'set stok') }}
+                                </span>
                             </td>
                             <td class="px-5 py-4 text-zinc-800">{{ $m->quantity }} {{ $m->ingredient->unit }}</td>
                             <td class="px-5 py-4 text-zinc-600">{{ $m->note }}</td>

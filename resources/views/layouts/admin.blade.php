@@ -26,7 +26,7 @@
             <div class="text-sm font-extrabold text-zinc-900" id="adminToastTitle">—</div>
             <div class="mt-1 text-xs text-zinc-600" id="adminToastMeta">—</div>
             <div class="mt-3 flex items-center justify-end gap-2">
-                <a href="{{ route('admin.sales.index') }}" class="rounded-xl bg-brand-500 px-3 py-2 text-xs font-extrabold text-white hover:bg-brand-600">Lihat Penjualan</a>
+                <a href="{{ route('admin.orders.index') }}" class="rounded-xl bg-brand-500 px-3 py-2 text-xs font-extrabold text-white hover:bg-brand-600">Penjualan</a>
                 <button type="button" id="adminToastClose" class="rounded-xl bg-white px-3 py-2 text-xs font-extrabold text-brand-700 shadow-sm ring-1 ring-brand-200 hover:bg-brand-50">Tutup</button>
             </div>
         </div>
