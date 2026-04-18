@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Brand (Shopee-like orange) */
+    --color-brand-50: #fff2ee;
+    --color-brand-100: #ffe3db;
+    --color-brand-200: #ffc4b8;
+    --color-brand-300: #ff9a86;
+    --color-brand-400: #ff7255;
+    --color-brand-500: #ee4d2d;
+    --color-brand-600: #d53f23;
+    --color-brand-700: #b7341d;
+    --color-brand-800: #992b18;
+    --color-brand-900: #7a2213;
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-600;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center rounded-xl border border-brand-200 bg-white px-5 py-3 text-sm font-semibold text-brand-700 hover:bg-brand-50;
+    }
+
+    .btn-ghost {
+        @apply inline-flex items-center justify-center rounded-xl bg-white/20 px-5 py-3 text-sm font-semibold text-white hover:bg-white/25;
+    }
+
+    .card {
+        @apply rounded-2xl border border-zinc-200 bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)];
+    }
+
+    .input {
+        @apply mt-1 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-500;
+    }
+
+    .badge {
+        @apply rounded-full px-2 py-1 text-xs font-semibold;
+    }
+
+    .chip {
+        @apply inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1.5 text-xs font-extrabold text-brand-700 shadow-sm ring-1 ring-white/30;
+    }
+
+    .card-hover {
+        @apply transition hover:-translate-y-0.5 hover:shadow-md;
+    }
+}
