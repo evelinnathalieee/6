@@ -49,38 +49,17 @@ class CheckoutController extends Controller
             ->orderByDesc('starts_at')
             ->limit(30)
             ->get()
-            ->map(function (Promo $p) use ($now, $total) {
-                $isActive = $p->isActive($now);
-                $eligible = $p->isEligibleForSubtotal($total);
-
-                $selectable = $isActive && $eligible;
-                $reason = null;
-
-                if (! $p->is_enabled) {
-                    $reason = 'Promo tidak aktif';
-                } elseif (! $isActive) {
-                    if ($p->starts_at && $now->lt($p->starts_at)) {
-                        $reason = 'Mulai '.$p->starts_at->format('d M Y H:i');
-                    } elseif ($p->ends_at && $now->gt($p->ends_at)) {
-                        $reason = 'Sudah berakhir';
-                    } else {
-                        $reason = 'Tidak tersedia';
-                    }
-                } elseif (! $eligible) {
-                    $reason = 'Min Rp '.number_format((int) $p->min_subtotal, 0, ',', '.');
-                }
-
+            ->filter(fn (Promo $promo) => $promo->isActive($now) && $promo->isEligibleForSubtotal($total))
+            ->map(function (Promo $promo) use ($total) {
                 return [
-                    'id' => $p->id,
-                    'name' => $p->name,
-                    'description' => $p->description,
-                    'discount_type' => $p->discount_type,
-                    'discount_value' => (int) $p->discount_value,
-                    'min_subtotal' => (int) $p->min_subtotal,
-                    'label' => $p->discountLabel(),
-                    'selectable' => $selectable,
-                    'reason' => $reason,
-                    'discount_preview' => $selectable ? $p->calculateDiscount($total) : 0,
+                    'id' => $promo->id,
+                    'name' => $promo->name,
+                    'description' => $promo->description,
+                    'discount_type' => $promo->discount_type,
+                    'discount_value' => (int) $promo->discount_value,
+                    'min_subtotal' => (int) $promo->min_subtotal,
+                    'label' => $promo->discountLabel(),
+                    'discount_preview' => $promo->calculateDiscount($total),
                 ];
             })
             ->values();

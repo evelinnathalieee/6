@@ -3,7 +3,7 @@
 @section('title', 'Order Online — Westland Coffee')
 
 @section('content')
-    <x-page.title title="Order Online" subtitle="Approval pembayaran pesanan dari member." />
+    <x-page.title title="Order Online" subtitle="Pesanan member masuk dulu sebagai pending, lalu dibayar di kasir." />
     @include('partials.admin.sales-tabs')
 
     <div class="mt-4 flex items-center justify-end">
@@ -15,7 +15,7 @@
 
     <div class="mt-8 grid gap-4 md:grid-cols-3">
         <div class="card p-5">
-            <div class="text-xs font-extrabold text-zinc-500">Menunggu approval</div>
+            <div class="text-xs font-extrabold text-zinc-500">Menunggu bayar di kasir</div>
             <div class="mt-2 text-lg font-extrabold">{{ $pendingOrders->count() }}</div>
         </div>
         <div class="card p-5">
@@ -30,8 +30,8 @@
 
     <div class="mt-8 overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">
         <div class="border-b border-zinc-200 bg-zinc-50 px-6 py-4">
-            <div class="text-sm font-extrabold text-zinc-900">Perlu Diproses</div>
-            <div class="mt-1 text-xs text-zinc-500">Semua pesanan member yang belum dikonfirmasi pembayarannya.</div>
+            <div class="text-sm font-extrabold text-zinc-900">Menunggu Pembayaran</div>
+            <div class="mt-1 text-xs text-zinc-500">Pesanan online member yang masih pending dan perlu dibayar di kasir.</div>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
@@ -59,7 +59,7 @@
                             <td class="px-6 py-4 text-zinc-800">{{ $trx->payment_method === 'qris' ? 'QRIS' : 'Cash' }}</td>
                             <td class="px-6 py-4 text-right font-semibold">Rp {{ number_format((int) $trx->total, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 text-right">
-                                <a href="{{ route('admin.sales.show', $trx) }}" class="rounded-xl bg-brand-500 px-4 py-2 text-xs font-extrabold text-white hover:bg-brand-600">Acc</a>
+                                <a href="{{ route('admin.sales.show', $trx) }}" class="rounded-xl bg-brand-500 px-4 py-2 text-xs font-extrabold text-white hover:bg-brand-600">Proses bayar</a>
                             </td>
                         </tr>
                     @empty
@@ -75,7 +75,7 @@
     <div class="mt-8 overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">
         <div class="border-b border-zinc-200 bg-zinc-50 px-6 py-4">
             <div class="text-sm font-extrabold text-zinc-900">Aktivitas Hari Ini</div>
-            <div class="mt-1 text-xs text-zinc-500">Order online yang sudah selesai atau dibatalkan.</div>
+            <div class="mt-1 text-xs text-zinc-500">Order online yang sudah selesai dibayar atau dibatalkan.</div>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">

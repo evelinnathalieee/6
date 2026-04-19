@@ -3,7 +3,7 @@
 @section('title', 'Riwayat Transaksi — Westland Coffee')
 
 @section('content')
-    <x-page.title title="Riwayat Transaksi" subtitle="Semua transaksi checkout member akan tampil di sini." />
+    <x-page.title title="Riwayat Transaksi" subtitle="Pesananmu masuk di sini. Status pending berarti belum dibayar di kasir." />
 
     <div class="mt-8 overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">
         <div class="overflow-x-auto">
@@ -42,6 +42,9 @@
                                         {{ $trx->payment_status === 'paid' ? 'paid' : ($trx->payment_status === 'canceled' ? 'canceled' : 'pending') }}
                                     </span>
                                 </div>
+                                @if ($trx->payment_status === 'pending')
+                                    <div class="mt-1 text-xs text-zinc-500">Bayar di kasir untuk lanjut diproses.</div>
+                                @endif
                             </td>
                             <td class="px-5 py-4 text-right">
                                 <div class="font-semibold">Rp {{ number_format($trx->total, 0, ',', '.') }}</div>

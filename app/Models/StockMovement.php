@@ -36,5 +36,9 @@ class StockMovement extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-}
 
+    public function formatQuantity(): string
+    {
+        return rtrim(rtrim(number_format((float) $this->quantity, 2, '.', ''), '0'), '.');
+    }
+}

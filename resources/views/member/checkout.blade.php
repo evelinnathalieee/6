@@ -71,12 +71,11 @@
                             <option
                                 value="{{ $p['id'] }}"
                                 {{ (string) old('promo_id') === (string) $p['id'] ? 'selected' : '' }}
-                                {{ $p['selectable'] ? '' : 'disabled' }}
                                 data-promo-name="{{ $p['name'] }}"
                                 data-discount-type="{{ $p['discount_type'] }}"
                                 data-discount-value="{{ (int) $p['discount_value'] }}"
                             >
-                                {{ $p['name'] }} — {{ $p['label'] }}@if($p['reason']) ({{ $p['reason'] }})@endif
+                                {{ $p['name'] }} — {{ $p['label'] }}
                             </option>
                         @endforeach
                     </select>

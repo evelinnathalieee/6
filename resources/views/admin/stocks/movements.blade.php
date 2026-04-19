@@ -32,7 +32,7 @@
                                     {{ $m->type === 'in' ? 'masuk' : ($m->type === 'out' ? 'keluar' : 'set stok') }}
                                 </span>
                             </td>
-                            <td class="px-5 py-4 text-zinc-800">{{ $m->quantity }} {{ $m->ingredient->unit }}</td>
+                            <td class="px-5 py-4 text-zinc-800">{{ $m->formatQuantity() }} {{ $m->ingredient->unit }}</td>
                             <td class="px-5 py-4 text-zinc-600">{{ $m->note }}</td>
                             <td class="px-5 py-4 text-zinc-600">{{ $m->creator?->name ?? '—' }}</td>
                         </tr>

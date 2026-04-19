@@ -44,5 +44,11 @@ class Ingredient extends Model
 
         return 'aman';
     }
-}
 
+    public function formatStock(?float $value = null): string
+    {
+        $number = (float) ($value ?? 0);
+
+        return rtrim(rtrim(number_format($number, 2, '.', ''), '0'), '.');
+    }
+}

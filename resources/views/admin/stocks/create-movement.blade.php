@@ -3,7 +3,7 @@
 @section('title', 'Update Stok — Westland Coffee')
 
 @section('content')
-    <x-page.title title="Update Stok" subtitle="{{ $ingredient->name }} • stok saat ini {{ rtrim(rtrim(number_format((float) $ingredient->current_stock, 2, '.', ''), '0'), '.') }} {{ $ingredient->unit }}" />
+    <x-page.title title="Update Stok" subtitle="{{ $ingredient->name }} • stok saat ini {{ $ingredient->formatStock((float) $ingredient->current_stock) }} {{ $ingredient->unit }}" />
 
     <div class="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <form method="POST" action="{{ route('admin.stocks.movement.store', $ingredient) }}" class="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_1px_0_rgba(0,0,0,0.04)]">
@@ -28,7 +28,7 @@
 
                     <div>
                         <label class="text-sm font-extrabold text-zinc-800">Jumlah ({{ $ingredient->unit }})</label>
-                        <input name="quantity" type="number" min="0.01" step="0.01" value="{{ old('quantity') }}" class="input mt-2" required />
+                        <input name="quantity" type="number" min="0.01" step="any" value="{{ old('quantity') }}" class="input mt-2" required />
                         @error('quantity') <div class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</div> @enderror
                     </div>
                 </div>
@@ -60,11 +60,11 @@
                 <div class="mt-4 space-y-3">
                     <div class="rounded-2xl bg-brand-50 px-4 py-3">
                         <div class="text-xs font-extrabold text-brand-700">Stok sekarang</div>
-                        <div class="mt-1 text-xl font-black text-zinc-900">{{ rtrim(rtrim(number_format((float) $ingredient->current_stock, 2, '.', ''), '0'), '.') }} {{ $ingredient->unit }}</div>
+                        <div class="mt-1 text-xl font-black text-zinc-900">{{ $ingredient->formatStock((float) $ingredient->current_stock) }} {{ $ingredient->unit }}</div>
                     </div>
                     <div class="rounded-2xl border border-zinc-200 px-4 py-3">
                         <div class="text-xs font-extrabold text-zinc-500">Batas menipis</div>
-                        <div class="mt-1 text-sm font-semibold text-zinc-900">{{ rtrim(rtrim(number_format((float) $ingredient->low_stock_threshold, 2, '.', ''), '0'), '.') }} {{ $ingredient->unit }}</div>
+                        <div class="mt-1 text-sm font-semibold text-zinc-900">{{ $ingredient->formatStock((float) $ingredient->low_stock_threshold) }} {{ $ingredient->unit }}</div>
                     </div>
                 </div>
             </div>

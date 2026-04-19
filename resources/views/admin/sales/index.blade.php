@@ -7,7 +7,7 @@
 @section('title', ($isOnline ? 'Riwayat Online' : 'Riwayat Kasir').' — Westland Coffee')
 
 @section('content')
-    <x-page.title :title="$isOnline ? 'Riwayat Online' : 'Riwayat Kasir'" :subtitle="$isOnline ? 'Pesanan member yang sudah dibayar.' : 'Transaksi walk-in yang sudah selesai.'" />
+    <x-page.title :title="$isOnline ? 'Riwayat Online' : 'Riwayat Kasir'" :subtitle="$isOnline ? 'Pesanan member yang sudah dikonfirmasi pembayarannya di kasir.' : 'Transaksi kasir yang sudah selesai dibayar.'" />
     @include('partials.admin.sales-tabs')
 
     <div class="mt-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -33,7 +33,7 @@
             <div class="mt-2 text-lg font-extrabold">{{ $summary['total_transactions'] }}</div>
         </div>
         <div class="card p-5">
-            <div class="text-xs font-extrabold text-zinc-500">{{ $isOnline ? 'Belum di-acc' : 'Pending' }}</div>
+            <div class="text-xs font-extrabold text-zinc-500">{{ $isOnline ? 'Masih pending' : 'Belum lunas' }}</div>
             <div class="mt-2 text-lg font-extrabold">{{ $summary['pending_transactions'] }}</div>
         </div>
     </div>

@@ -12,6 +12,19 @@ use Illuminate\Support\Facades\DB;
 
 class PosController extends Controller
 {
+    private function redirectAfterProcess(Transaction $transaction, string $message)
+    {
+        if ($transaction->sales_channel === Transaction::CHANNEL_ONLINE) {
+            return redirect()
+                ->route('admin.sales.index', ['channel' => Transaction::CHANNEL_ONLINE])
+                ->with('success', $message);
+        }
+
+        return redirect()
+            ->route('admin.pos')
+            ->with('success', $message);
+    }
+
     public function pay(Request $request, Transaction $transaction)
     {
         $data = $request->validate([
@@ -83,7 +96,7 @@ class PosController extends Controller
             }
         });
 
-        return back()->with('success', 'Transaksi dibayar.');
+        return $this->redirectAfterProcess($transaction->fresh(), 'Transaksi dibayar.');
     }
 
     public function cancel(Transaction $transaction)
@@ -97,7 +110,6 @@ class PosController extends Controller
             'canceled_at' => now(),
         ]);
 
-        return back()->with('success', 'Transaksi dibatalkan.');
+        return $this->redirectAfterProcess($transaction->fresh(), 'Transaksi dibatalkan.');
     }
 }
-

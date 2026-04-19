@@ -3,14 +3,14 @@
 @section('title', 'Kasir — Westland Coffee')
 
 @section('content')
-    <x-page.title title="Kasir" subtitle="Transaksi langsung untuk pembeli walk-in." />
+    <x-page.title title="Pemesanan Kasir" subtitle="Transaksi langsung dari kasir." />
     @include('partials.admin.sales-tabs')
 
     <div class="mt-8 grid gap-4 lg:grid-cols-12">
         <section class="card p-5 lg:col-span-7">
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <div class="text-sm font-extrabold">Kasir</div>
+                    <div class="text-sm font-extrabold">Pemesanan Kasir</div>
                     <div class="mt-1 text-xs text-zinc-500">Klik menu untuk tambah ke keranjang.</div>
                 </div>
                 <div class="flex gap-2">

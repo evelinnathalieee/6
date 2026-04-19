@@ -2,12 +2,15 @@
 
 @php
     $isOnline = $transaction->sales_channel === \App\Models\Transaction::CHANNEL_ONLINE;
+    $activeSalesTab = $isOnline
+        ? ($transaction->payment_status === \App\Models\Transaction::PAYMENT_PENDING ? 'orders' : 'history_online')
+        : 'history_pos';
 @endphp
 
 @section('title', ($isOnline ? 'Order Online' : 'Detail Kasir').' — Westland Coffee')
 
 @section('content')
-    <x-page.title :title="$isOnline ? 'Order Online' : 'Detail Kasir'" :subtitle="$isOnline ? 'Acc pembayaran order member di sini.' : 'Detail transaksi kasir.'" />
+    <x-page.title :title="$isOnline ? 'Order Online' : 'Detail Kasir'" :subtitle="$isOnline ? 'Bayar dan konfirmasi order member di kasir dari sini.' : 'Detail transaksi kasir.'" />
     @include('partials.admin.sales-tabs')
 
     <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -90,7 +93,7 @@
 
             <div class="mt-6 rounded-2xl bg-white/95 p-4 text-zinc-900 shadow-sm ring-1 ring-white/30">
                 <div class="text-xs text-zinc-500">Pelanggan</div>
-                <div class="mt-1 text-sm font-extrabold">{{ $transaction->user?->name ?? 'Walk-in' }}</div>
+                <div class="mt-1 text-sm font-extrabold">{{ $transaction->user?->name ?? 'Pelanggan kasir' }}</div>
             </div>
 
             @if ($transaction->payment_status === 'pending')

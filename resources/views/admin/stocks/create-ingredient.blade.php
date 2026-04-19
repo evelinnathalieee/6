@@ -32,13 +32,13 @@
                 <div class="grid gap-5 md:grid-cols-2">
                     <div>
                         <label class="text-sm font-extrabold text-zinc-800">Stok awal</label>
-                        <input name="opening_stock" type="number" min="0" step="0.01" value="{{ old('opening_stock', 0) }}" class="input mt-2" required />
+                        <input name="opening_stock" type="number" min="0" step="any" value="{{ old('opening_stock', 0) }}" class="input mt-2" required />
                         @error('opening_stock') <div class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</div> @enderror
                     </div>
 
                     <div>
                         <label class="text-sm font-extrabold text-zinc-800">Batas menipis</label>
-                        <input name="low_stock_threshold" type="number" min="0" step="0.01" value="{{ old('low_stock_threshold', 0) }}" class="input mt-2" required />
+                        <input name="low_stock_threshold" type="number" min="0" step="any" value="{{ old('low_stock_threshold', 0) }}" class="input mt-2" required />
                         @error('low_stock_threshold') <div class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</div> @enderror
                     </div>
                 </div>

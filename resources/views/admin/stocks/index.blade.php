@@ -54,16 +54,16 @@
                                 <td class="px-5 py-4">
                                     <div class="font-semibold text-zinc-900">{{ $ing->name }}</div>
                                     <div class="mt-1 text-xs text-zinc-500">
-                                        Awal {{ rtrim(rtrim(number_format((float) $ing->opening_stock, 2, '.', ''), '0'), '.') }} {{ $ing->unit }}
-                                        • Masuk {{ rtrim(rtrim(number_format((float) ($ing->stock_in ?? 0), 2, '.', ''), '0'), '.') }}
-                                        • Keluar {{ rtrim(rtrim(number_format((float) ($ing->stock_out ?? 0), 2, '.', ''), '0'), '.') }}
+                                        Awal {{ $ing->formatStock((float) $ing->opening_stock) }} {{ $ing->unit }}
+                                        • Masuk {{ $ing->formatStock((float) ($ing->stock_in ?? 0)) }}
+                                        • Keluar {{ $ing->formatStock((float) ($ing->stock_out ?? 0)) }}
                                     </div>
                                 </td>
                                 <td class="px-5 py-4 text-zinc-900">
-                                    <div class="font-extrabold">{{ rtrim(rtrim(number_format((float) $ing->current_stock, 2, '.', ''), '0'), '.') }}</div>
+                                    <div class="font-extrabold">{{ $ing->formatStock((float) $ing->current_stock) }}</div>
                                     <div class="text-xs text-zinc-500">{{ $ing->unit }}</div>
                                 </td>
-                                <td class="px-5 py-4 text-zinc-800">{{ rtrim(rtrim(number_format((float) $ing->low_stock_threshold, 2, '.', ''), '0'), '.') }} {{ $ing->unit }}</td>
+                                <td class="px-5 py-4 text-zinc-800">{{ $ing->formatStock((float) $ing->low_stock_threshold) }} {{ $ing->unit }}</td>
                                 <td class="px-5 py-4">
                                     <span class="badge {{ $status === 'aman' ? 'bg-emerald-50 text-emerald-700' : ($status === 'menipis' ? 'bg-amber-50 text-amber-800' : 'bg-rose-50 text-rose-700') }}">
                                         {{ $status }}
@@ -101,7 +101,7 @@
                             <div class="flex items-start justify-between gap-3">
                                 <div>
                                     <div class="font-semibold text-zinc-900">{{ $ing->name }}</div>
-                                    <div class="mt-1 text-xs text-zinc-500">{{ rtrim(rtrim(number_format((float) $ing->current_stock, 2, '.', ''), '0'), '.') }} {{ $ing->unit }} tersisa</div>
+                                    <div class="mt-1 text-xs text-zinc-500">{{ $ing->formatStock((float) $ing->current_stock) }} {{ $ing->unit }} tersisa</div>
                                 </div>
                                 <span class="badge {{ $status === 'menipis' ? 'bg-amber-50 text-amber-800' : 'bg-rose-50 text-rose-700' }}">{{ $status }}</span>
                             </div>
@@ -129,7 +129,7 @@
                                 </span>
                             </div>
                             <div class="mt-1 text-sm text-zinc-700">
-                                {{ rtrim(rtrim(number_format((float) $movement->quantity, 2, '.', ''), '0'), '.') }} {{ $movement->ingredient?->unit ?? '' }}
+                                {{ $movement->formatQuantity() }} {{ $movement->ingredient?->unit ?? '' }}
                             </div>
                             <div class="mt-1 text-xs text-zinc-500">{{ $movement->moved_at?->format('d M Y H:i') }}</div>
                         </div>

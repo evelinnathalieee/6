@@ -16,6 +16,13 @@ class HomeController extends Controller
             ->orderBy('name')
             ->get();
 
+        if ($featuredMenu->isEmpty()) {
+            $featuredMenu = MenuItem::query()
+                ->orderByDesc('id')
+                ->limit(6)
+                ->get();
+        }
+
         $promos = Promo::query()
             ->where('is_enabled', true)
             ->orderByDesc('starts_at')

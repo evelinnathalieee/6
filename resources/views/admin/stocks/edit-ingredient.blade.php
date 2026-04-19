@@ -33,7 +33,7 @@
                 <div class="grid gap-5 md:grid-cols-2">
                     <div>
                         <label class="text-sm font-extrabold text-zinc-800">Batas menipis</label>
-                        <input name="low_stock_threshold" type="number" min="0" step="0.01" value="{{ old('low_stock_threshold', $ingredient->low_stock_threshold) }}" class="input mt-2" required />
+                        <input name="low_stock_threshold" type="number" min="0" step="any" value="{{ old('low_stock_threshold', $ingredient->formatStock((float) $ingredient->low_stock_threshold)) }}" class="input mt-2" required />
                         @error('low_stock_threshold') <div class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</div> @enderror
                     </div>
 
@@ -56,11 +56,11 @@
                 <div class="text-sm font-extrabold text-zinc-900">Ringkasan bahan</div>
                 <div class="mt-4 rounded-2xl bg-brand-50 px-4 py-4">
                     <div class="text-xs font-extrabold text-brand-700">Stok sekarang</div>
-                    <div class="mt-1 text-2xl font-black text-zinc-900">{{ rtrim(rtrim(number_format((float) $ingredient->current_stock, 2, '.', ''), '0'), '.') }} {{ $ingredient->unit }}</div>
+                    <div class="mt-1 text-2xl font-black text-zinc-900">{{ $ingredient->formatStock((float) $ingredient->current_stock) }} {{ $ingredient->unit }}</div>
                 </div>
                 <div class="mt-3 rounded-2xl border border-zinc-200 px-4 py-4">
                     <div class="text-xs font-extrabold text-zinc-500">Stok awal</div>
-                    <div class="mt-1 text-sm font-bold text-zinc-900">{{ rtrim(rtrim(number_format((float) $ingredient->opening_stock, 2, '.', ''), '0'), '.') }} {{ $ingredient->unit }}</div>
+                    <div class="mt-1 text-sm font-bold text-zinc-900">{{ $ingredient->formatStock((float) $ingredient->opening_stock) }} {{ $ingredient->unit }}</div>
                 </div>
             </div>
 
