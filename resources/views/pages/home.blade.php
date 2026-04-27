@@ -5,9 +5,9 @@
 @section('content')
     @php
         $testimonials = [
-            ['name' => 'Raka', 'text' => 'Es Kopi Susu-nya enak dan nggak bikin eneg. Tempatnya nyaman buat nugas.'],
+            ['name' => 'Raka', 'text' => 'Es Kopi Susu-nya enak dan nggak bikin eneg. Tempatnya nyaman buat santai lama.'],
             ['name' => 'Nayla', 'text' => 'Matcha Latte favorit! Ordernya juga cepet, promo jelas.'],
-            ['name' => 'Dimas', 'text' => 'Harga ramah kantong, rasanya konsisten. Cocok buat nongkrong sore.'],
+            ['name' => 'Dimas', 'text' => 'Harga ramah kantong, rasanya konsisten. Cocok buat nongkrong malam.'],
         ];
     @endphp
 
